@@ -3,6 +3,7 @@
  * GET home page.
  */
 var crypto 	= require('crypto'),
+	fs = require('fs'),
 	User 	= require('../models/user'),
 	Post 	= require('../models/post.js');
 
@@ -10,7 +11,7 @@ module.exports = function (app) {
 
 	app.get('/', function(req, res) {
 
-		Post.get(null, function (err, posts) {
+		Post.getAll(null, function (err, posts) {
 
 			if(err) posts = [];
 
@@ -21,7 +22,7 @@ module.exports = function (app) {
 			  	success: 	req.flash('success').toString(),
 			  	error: 		req.flash('error').toString()
 		  	});
-		})
+		});
 	  
 	});
 
@@ -114,13 +115,14 @@ module.exports = function (app) {
 
 	});
 
+	//发表文章
 	app.get('post', checkLogin);
 	app.get('/post', function (req, res) {
 		res.render('post', { 
 			title: '发表' ,
 			user: req.session.user,
-      		success: req.flash('success').toString(),
-      		error: req.flash('error').toString()
+  		success: req.flash('success').toString(),
+  		error: req.flash('error').toString()
 			
 		});
 	});
@@ -148,6 +150,132 @@ module.exports = function (app) {
 		req.flash('success','退出成功');
 		res.redirect('/');
 
+	});
+
+	//上传文件
+	app.get('upload',checkLogin);
+	app.get('/upload', function (req, res) {
+		res.render('upload',{
+			title:'文件上传',
+			user: req.session.user,
+			success: req.flash('success').toString(),
+			error: req.flash('error').toString()
+		});
+	});
+	
+	app.post('/upload', checkLogin);
+	app.post('/upload', function (req, res) {
+		for (var i in req.files) {
+			if (req.files[i].size == 0) {
+				//使用同步方式删除文件
+				fs.unlinkSync(req.files[i].path);
+				console.log('成功删除空文件');
+			} else {
+				var target_path = './public/images/' + req.files[i].name;
+				//使用同步方式重命名一个文件
+				fs.renameSync(req.files[i].path, target_path);
+				console.log('成功重命名文件！');
+			}
+		}
+		req.flash('success', '文件上传成功！');
+		res.redirect('/upload');
+	});
+
+	//获取用户个人信息
+	app.get('/u/:name', function (req, res) {
+		//检查用户是否存在
+		User.get(req.params.name, function (err, user) {
+			if(!user) {
+				req.flash('error', '用户不存在!');
+				return res.redirect('/'); 
+			}
+
+			//查询并返回该用户的所有文章
+			Post.getAll(user.name, function(err, posts){
+				if (err) {
+					req.flash('error',err);
+					return res.redirect('/');
+				}
+				res.render('user', {
+					title: user.name,
+					posts: posts,
+					user: req.session.user,
+					success: req.flash('success').toString(),
+					error: req.flash('error').toString()
+				});
+			});
+		});
+	});
+	app.get('/u/:name/:day/:title', function(req, res) {
+		Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post) {
+			if (err) {
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+
+			res.render('article', {
+				title: req.params.title,
+				post: post,
+				user: req.session.user,
+				success: req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+	});
+
+	//编辑文章
+	app.get('/edit/:name/:day/:title', checkLogin);
+	app.get('/edit/:name/:day/:title', function(req, res) {
+		var currentUser = req.session.user;
+		Post.edit(currentUser.name, req.params.day, req.params.title, function(err, post) {
+			if (err) {
+				req.flash('error',err);
+				return res.redirect('back');
+			}
+
+			res.render('edit', {
+				title: '编辑文章',
+				post: post,
+				user: req.session.user,
+				success:req.flash('success').toString(),
+				error: req.flash('error').toString()
+			});
+		});
+		
+	});
+
+	app.post('/edit/:name/:day/:title',checkLogin);
+	app.post('/edit/:name/:day/:title', function(req, res){
+		var currentUser = req.session.user;
+		Post.update(currentUser.name,req.params.day, req.params.title, req.body['post'], function (err){
+			var url = '/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title;
+
+			if(err) {
+				req.flash('error',err);
+				res.redirect(url); 
+			}
+
+			req.flash('success','修改成功');
+			res.redirect(url); 
+		})
+	})
+
+	//删除文章
+	app.get('/remove/:name/:day/:title',checkLogin);
+	app.get('/remove/:name/:day/:title',function(req, res){
+		var currentUser = req.session.user;
+		Post.remove(currentUser.name, req.params.day, req.params.title, function(err){
+			if(err){
+				req.flash('error',err);
+				return res.redirect('back');
+			}
+			req.flash('success', '删除成功!');
+    	res.redirect('/');
+		});
+	});
+
+	app.use(function (req, res) {
+  	res.render("404");
 	});
 
 	function checkLogin (req, res, next) {
