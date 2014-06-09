@@ -5,6 +5,8 @@
 	<title>Blog</title>
 	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 	<link rel="stylesheet" href="/stylesheets/ace.min.css">
+	<link rel="stylesheet" href="/stylesheets/ace-skin.min.css">
+	<link rel="stylesheet" href="/stylesheets/ace-rtl.min.css">
 	<link rel="stylesheet" href="/stylesheets/font-awesome-4.1.0/css/font-awesome.min.css">
 	
 </head>
@@ -110,7 +112,7 @@
 				</ul><!-- /.nav-list -->		
 			</div>
 			
-			<div class="page-content">
+			<div class="main-content">
 
 				<div class="page-header">
 					<h1>
@@ -139,16 +141,14 @@
 			  
 			<% } %>
 			<% if (error) { %>
-			  <div class="alert alert-block alert-error">
-								<button type="button" class="close" data-dismiss="alert">
-									<i class="ace-icon fa fa-times"></i>
-								</button>
+			  <div class="alert alert-block alert-danger">
+					<button type="button" class="close" data-dismiss="alert">
+						<i class="ace-icon fa fa-times"></i>
+					</button>
 
-								<i class="ace-icon fa fa-times red"></i>
-								<strong class="red">
-									<%= error %>
-									
-								</strong>,
-	
-							</div>
+					<i class="ace-icon fa fa-times red"></i>
+					<strong class="red">
+						<%= error %>
+					</strong>	
+				</div>
 			<% } %>
