@@ -1,0 +1,5 @@
+<%- include header.html %>
+<% posts.forEach(function (tag, index) { %>
+  <a class="label label-xlg label-primary arrowed" href="/tags/<%= tag %>"><i class="fa fa-tags"></i> <%= tag %></a>
+<% }) %>
+<%- include footer.html %>

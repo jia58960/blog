@@ -1,4 +1,4 @@
-<%- include header %>
+<%- include header.html %>
 <ul class="archive">
 <% var lastYear = 0 %>
 <% posts.forEach(function (post, index) { %>
@@ -9,4 +9,4 @@
     <li><a href="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a></li>
 <% }) %>
 </ul>
-<%- include footer %>
+<%- include footer.html %>

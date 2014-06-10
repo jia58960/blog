@@ -1,4 +1,4 @@
-<%- include header %>
+<%- include header.html %>
 <form method="post">
   标题：<br />
   <input type="text" name="title" value="<%= post.title %>" disabled="disabled" /><br />
@@ -10,4 +10,4 @@
   <textarea name="post" rows="20" cols="100"><%= post.post %></textarea><br />
   <input type="submit" value="保存修改" />
 </form>
-<%- include footer %>
+<%- include footer.html %>

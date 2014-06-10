@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Blog</title>
+	<title>Node.JS简易博客系统</title>
 	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 	<link rel="stylesheet" href="/stylesheets/ace.min.css">
 	<link rel="stylesheet" href="/stylesheets/ace-skin.min.css">
@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="/stylesheets/font-awesome-4.1.0/css/font-awesome.min.css">
 	
 </head>
+
 <body class="no-skin">
 
 	<div id="navbar" class="navbar navbar-default">
@@ -25,21 +26,21 @@
 				</button>
 
 				<div class="navbar-header pull-left">
-					<a href="#" class="navbar-brand">
+					<a href="/" class="navbar-brand">
 						<small>
 							<i class="fa fa-leaf"></i>
 							NodeJS简易博客系统
 						</small>
 					</a>
 				</div>
-
 			</div><!-- /.navbar-container -->
 	</div>
+
 		<div class="main-container">
 
 			<div id="sidebar" class="sidebar responsive">
 				<ul class="nav nav-list">
-					<li class="active">
+					<li>
 						<a href="/">
 							<i class="menu-icon fa fa-tachometer"></i>
 							<span class="menu-text"> 首页 </span>
@@ -123,32 +124,32 @@
 						</small>
 					</h1>
 				</div>
-			</div>
-			
-			<% if (success) { %>
-			<div class="alert alert-block alert-success">
+				
+					<div class="col-xs-12">
+						<% if (success) { %>
+							<div class="alert alert-block alert-success">
 								<button type="button" class="close" data-dismiss="alert">
 									<i class="ace-icon fa fa-times"></i>
 								</button>
 
 								<i class="ace-icon fa fa-check green"></i>
 								<strong class="green">
-									<%= success %>
-									
-								</strong>,
-	
+									<%= success %>									
+								</strong>
 							</div>
-			  
-			<% } %>
-			<% if (error) { %>
-			  <div class="alert alert-block alert-danger">
-					<button type="button" class="close" data-dismiss="alert">
-						<i class="ace-icon fa fa-times"></i>
-					</button>
+							  
+							<% } %>
+							<% if (error) { %>
+						  <div class="alert alert-block alert-danger">
+								<button type="button" class="close" data-dismiss="alert">
+									<i class="ace-icon fa fa-times"></i>
+								</button>
 
-					<i class="ace-icon fa fa-times red"></i>
-					<strong class="red">
-						<%= error %>
-					</strong>	
-				</div>
-			<% } %>
+								<i class="ace-icon fa fa-times red"></i>
+								<strong class="red">
+									<%= error %>
+								</strong>	
+							</div>
+							<% } %>
+					</div>
+			
