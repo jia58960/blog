@@ -11,6 +11,10 @@
 	"mongodb":"*",
 	"connect-mongo":"*",
 	"connect-flash": "*",
-	"markdown":"*"
+	"markdown":"*",
+  "async": "*",
+  "passport": "*",
+  "passport-github": "*",
+  "generic-pool": "*"
   }
 }

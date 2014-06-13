@@ -2,12 +2,12 @@
 	<ul class="pager">
 	<% if (!isFirstPage) { %>
 	<li class="previous">
-		<a class="label label-xlg label-danger arrowed" href="?p=<%= page-1 %>">上一页</a>
+		<a class="label label-xlg label-warning arrowed" href="?p=<%= page-1 %>">上一页</a>
 	</li>
 	<% } %>
 	<% if (!isLastPage) { %>
 	<li class="next">
-		<a class="label label-xlg label-danger arrowed-right" href="?p=<%= page+1 %>">下一页</a>
+		<a class="label label-xlg label-warning arrowed-right" href="?p=<%= page+1 %>">下一页</a>
 	</li>
 	<% } %>
 </ul>

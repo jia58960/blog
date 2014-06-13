@@ -1,5 +1,6 @@
 var mongodb = require('./db'),
-	crypto = require('crypto');
+	crypto = require('crypto'),
+	async = require('async');
 
 function User (user) {
 	this.name = user.name;
@@ -21,60 +22,60 @@ User.prototype.save = function (callback) {
 	    head: head
 	};
 
-	//打开数据库
-	mongodb.open( function (err, db) {
-		if (err) {
-			return callback(err);
-		}
-		//读取users集合
-		db.collection('users', function (err, collection) {
-			if (err) {
-				mongodb.close();
-				return callback(err);
-			}
+	async.waterfall([
+		function(cb){
+			mongodb.open(function(err, db){
+				cb(err, db);
+			})
+		},
 
-			//将用户数据插入users集合
+		function(db, cb) {
+			db.collection("users", function(err, collection){
+				cb(err, collection)
+			})
+		},
+
+		function(collection, cb) {
 			collection.insert(user, {
 				safe:true
-			},function (err,user) {
-				mongodb.close();
-				if (err) {
-					return callback(err);
-				}
-				callback(null, user[0]); //成功，err为空，并返回存储后的用户文档
-			});
-		})
-	});
+			},function(err, user){
+				cb(err, user);
+			})
+		}
+
+	],function(err, user){
+		mongodb.close();
+		callback(err, user[0])
+	})
+
 }
 
 //读取用户信息
 User.get = function (name, callback) {
-	//open db
-	mongodb.open( function (err, db) {
-		if(err) {
-			return callback(err);
-		}
-		db.collection('users', function (err, collection) {
 
-			if (err) { 
-				mongodb.close();
-				return callback(err);
-			}
+	async.waterfall([
+		function(cb){
+			mongodb.open(function(err,db){
+				cb(err, db);
+			})
+		},
 
-			//查找用户文档信息
+		function(db, cb){
+			db.collection("users", function(err, collection){
+				cb(err, collection);
+			})
+		},
+
+		function(collection,cb){
 			collection.findOne({
 				name:name
-			},function (err,user) {
-				console.log(name);
-				console.log(user);
-				mongodb.close();
-
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, user); //成功的话返回查找到的用户信息
+			},function(err, user){
+				cb(err, user)
 			})
-		})
-	}) 
+		},
+		
+	], function(err, user){
+		mongodb.close();
+		callback(err,user)
+	})
 }
